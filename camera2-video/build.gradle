@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/WesleyElliott/Camera2-Video'
     gitUrl = 'https://github.com/WesleyElliott/Camera2-Video.git'
 
-    libraryVersion = '0.0.2'
+    libraryVersion = '0.0.3'
 
     developerId = 'WesleyElliott'
     developerName = 'Wesley Elliott'
@@ -32,7 +32,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
-        versionName "0.0.2"
+        versionName "0.0.3"
     }
     buildTypes {
         release {
