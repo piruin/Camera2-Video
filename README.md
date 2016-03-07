@@ -31,14 +31,15 @@ The new Camera2 API has greatly changed how to interface with the camera. This l
 ## Download
 Either download using Gradle:
 
-`compile 'com.wesleyelliott.camera2:camera2-video'`
+`compile 'com.wesleyelliott:camera2-video:0.0.2'`
 
 or Maven:
 
 ```
-<dependency>
+dependency>
   <groupId>com.wesleyelliott</groupId>
-  <artifactId>camera2</artifactId>
-  <version>0.0.1</version>
+  <artifactId>camera2-video</artifactId>
+  <version>0.0.2</version>
+  <type>pom</type>
 </dependency>
 ```
