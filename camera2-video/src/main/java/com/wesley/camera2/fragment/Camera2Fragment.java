@@ -28,6 +28,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 
+import com.wesley.camera2.util.Camera2Listener;
 import com.wesley.camera2.util.CameraUtil;
 import com.wesley.camera2.widget.AutoFitTextureView;
 
@@ -42,19 +43,9 @@ import java.util.concurrent.TimeUnit;
  * Created by wesley on 2016/03/04.
  */
 @TargetApi(21)
-public abstract class Camera2Fragment extends Fragment {
+public abstract class Camera2Fragment extends Fragment implements Camera2Listener {
 
-    public interface Cam2Listener {
-        void onCameraException(CameraAccessException cae);
-
-        void onNullPointerException(NullPointerException npe);
-
-        void onInterruptedException(InterruptedException ie);
-
-        void onIOException(IOException ioe);
-
-        void onConfigurationFailed();
-    }
+    public static final String TAG = "Camera2Fragment";
 
     private AutoFitTextureView mCameraLayout;
     private CameraDevice mCameraDevice;
@@ -70,8 +61,7 @@ public abstract class Camera2Fragment extends Fragment {
     private boolean upsideDown;
     private int mCameraFacing = CameraCharacteristics.LENS_FACING_BACK;
     private File mCurrentFile;
-
-    public abstract Cam2Listener getCam2Listener();
+    private Camera2Listener mCamera2Listener;
 
     public abstract int getTextureResource();
 
@@ -120,6 +110,7 @@ public abstract class Camera2Fragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mCameraLayout = (AutoFitTextureView) view.findViewById(getTextureResource());
+        mCamera2Listener = this;
     }
 
     @Override
@@ -162,7 +153,7 @@ public abstract class Camera2Fragment extends Fragment {
             mBackgroundHandler = null;
         } catch (InterruptedException e) {
             e.printStackTrace();
-            getCam2Listener().onInterruptedException(e);
+            mCamera2Listener.onInterruptedException(e);
         }
     }
 
@@ -226,13 +217,13 @@ public abstract class Camera2Fragment extends Fragment {
 
         } catch (CameraAccessException cae) {
             cae.printStackTrace();
-            getCam2Listener().onCameraException(cae);
+            mCamera2Listener.onCameraException(cae);
         } catch (NullPointerException npe) {
             npe.printStackTrace();
-            getCam2Listener().onNullPointerException(npe);
+            mCamera2Listener.onNullPointerException(npe);
         } catch (InterruptedException ie) {
             ie.printStackTrace();
-            getCam2Listener().onInterruptedException(ie);
+            mCamera2Listener.onInterruptedException(ie);
             throw new RuntimeException("Interrupted while trying to lock camera opening.");
         } catch (SecurityException se) {
             requestVideoPermissions();
@@ -257,7 +248,7 @@ public abstract class Camera2Fragment extends Fragment {
             }
         } catch (InterruptedException ie) {
             ie.printStackTrace();
-            getCam2Listener().onInterruptedException(ie);
+            mCamera2Listener.onInterruptedException(ie);
             throw new RuntimeException("Interrupted while trying to lock camera closing.");
         } finally {
             mCameraOpenCloseLock.release();
@@ -273,10 +264,10 @@ public abstract class Camera2Fragment extends Fragment {
             mCameraDevice.createCaptureSession(getSurfaces(), mSessionCallback, mBackgroundHandler);
         } catch (CameraAccessException cae) {
             cae.printStackTrace();
-            getCam2Listener().onCameraException(cae);
+            mCamera2Listener.onCameraException(cae);
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            getCam2Listener().onIOException(ioe);
+            mCamera2Listener.onIOException(ioe);
         }
     }
 
@@ -297,7 +288,7 @@ public abstract class Camera2Fragment extends Fragment {
             mPreviewBuilder.addTarget(recorderSurface);
         } catch (CameraAccessException cae) {
             cae.printStackTrace();
-            getCam2Listener().onCameraException(cae);
+            mCamera2Listener.onCameraException(cae);
         }
 
         return surfaces;
@@ -314,7 +305,7 @@ public abstract class Camera2Fragment extends Fragment {
             mPreviewSession.setRepeatingRequest(mPreviewBuilder.build(), null, mBackgroundHandler);
         } catch (CameraAccessException cae) {
             cae.printStackTrace();
-            getCam2Listener().onCameraException(cae);
+            mCamera2Listener.onCameraException(cae);
         }
     }
 
@@ -414,7 +405,7 @@ public abstract class Camera2Fragment extends Fragment {
         public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
             Activity activity = getActivity();
             if (null != activity) {
-                getCam2Listener().onConfigurationFailed();
+                mCamera2Listener.onConfigurationFailed();
                 activity.finish();
             }
         }
@@ -441,4 +432,31 @@ public abstract class Camera2Fragment extends Fragment {
 
         }
     };
+
+    // Default Cam2Listener events
+
+    @Override
+    public void onCameraException(CameraAccessException cae) {
+        cae.printStackTrace();
+    }
+
+    @Override
+    public void onNullPointerException(NullPointerException npe) {
+        npe.printStackTrace();
+    }
+
+    @Override
+    public void onInterruptedException(InterruptedException ie) {
+        ie.printStackTrace();
+    }
+
+    @Override
+    public void onIOException(IOException ioe) {
+        ioe.printStackTrace();
+    }
+
+    @Override
+    public void onConfigurationFailed() {
+        Log.e(TAG, "Failed to configure camera");
+    }
 }

@@ -1,7 +1,6 @@
 package com.wesley.sample.fragment;
 
 import android.content.Context;
-import android.hardware.camera2.CameraAccessException;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -11,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.wesley.camera2.fragment.Camera2Fragment;
+import com.wesley.camera2.util.Camera2Listener;
 import com.wesley.sample.R;
 
 import java.io.File;
@@ -20,7 +20,7 @@ import java.util.Date;
 /**
  * Created by wesley on 2016/03/05.
  */
-public class CaptureFragment extends Camera2Fragment implements Camera2Fragment.Cam2Listener {
+public class CaptureFragment extends Camera2Fragment implements Camera2Listener {
 
     @Nullable
     @Override
@@ -38,11 +38,6 @@ public class CaptureFragment extends Camera2Fragment implements Camera2Fragment.
                 onCameraControlClick((ImageView)v);
             }
         });
-    }
-
-    @Override
-    public Cam2Listener getCam2Listener() {
-        return this;
     }
 
     @Override
@@ -71,30 +66,5 @@ public class CaptureFragment extends Camera2Fragment implements Camera2Fragment.
             view.setImageResource(R.drawable.ic_pause);
             startRecordingVideo();
         }
-    }
-
-    @Override
-    public void onCameraException(CameraAccessException cae) {
-        cae.printStackTrace();
-    }
-
-    @Override
-    public void onNullPointerException(NullPointerException npe) {
-        npe.printStackTrace();
-    }
-
-    @Override
-    public void onInterruptedException(InterruptedException ie) {
-        ie.printStackTrace();
-    }
-
-    @Override
-    public void onIOException(IOException ioe) {
-        ioe.printStackTrace();
-    }
-
-    @Override
-    public void onConfigurationFailed() {
-        Log.d("TEST", "Failed to configure camera");
     }
 }
