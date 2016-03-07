@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
@@ -68,6 +69,7 @@ public abstract class Camera2Fragment extends Fragment {
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
     private boolean upsideDown;
     private int mCameraFacing = CameraCharacteristics.LENS_FACING_BACK;
+    private File mCurrentFile;
 
     public abstract Cam2Listener getCam2Listener();
 
@@ -140,6 +142,9 @@ public abstract class Camera2Fragment extends Fragment {
             closeCamera();
         }
         stopBackgroundThread();
+        if (mCurrentFile != null) {
+            mCurrentFile.delete(); // delete empty file
+        }
         super.onPause();
     }
 
@@ -340,15 +345,21 @@ public abstract class Camera2Fragment extends Fragment {
         mCameraLayout.setTransform(matrix);
     }
 
+    protected File getCurrentFile() {
+        return mCurrentFile;
+    }
+
     protected void setUpMediaRecorder() throws IOException {
         final Activity activity = getActivity();
         if (null == activity) {
             return;
         }
+        File file = getVideoFile(activity);
+        mCurrentFile = file;
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mMediaRecorder.setOutputFile(getVideoFile(activity).getAbsolutePath());
+        mMediaRecorder.setOutputFile(file.getAbsolutePath());
         mMediaRecorder.setVideoEncodingBitRate(1600 * 1000);
         mMediaRecorder.setVideoFrameRate(30);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
