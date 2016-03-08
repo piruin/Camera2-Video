@@ -159,7 +159,7 @@ public abstract class Camera2Fragment extends Fragment implements Camera2Listene
 
     protected void requestVideoPermissions() {
         if (CameraUtil.shouldShowRequestPermissionRationale(this, Camera2PermissionDialog.VIDEO_PERMISSIONS)) {
-            Camera2PermissionDialog.newInstance(getParentFragment()).show(getChildFragmentManager(), Camera2PermissionDialog.FRAGMENT_DIALOG);
+            Camera2PermissionDialog.newInstance(this).show(getChildFragmentManager(), Camera2PermissionDialog.FRAGMENT_DIALOG);
         } else {
             FragmentCompat.requestPermissions(this, Camera2PermissionDialog.VIDEO_PERMISSIONS, Camera2PermissionDialog.REQUEST_VIDEO_PERMISSIONS);
         }
