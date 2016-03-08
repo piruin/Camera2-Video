@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v13.app.FragmentCompat;
 import android.util.Log;
 import android.util.Size;
@@ -28,6 +29,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 
+import com.wesley.camera2.R;
 import com.wesley.camera2.util.Camera2Listener;
 import com.wesley.camera2.util.CameraUtil;
 import com.wesley.camera2.widget.AutoFitTextureView;
@@ -62,6 +64,7 @@ public abstract class Camera2Fragment extends Fragment implements Camera2Listene
     private int mCameraFacing = CameraCharacteristics.LENS_FACING_BACK;
     private File mCurrentFile;
     private Camera2Listener mCamera2Listener;
+    private String mRationaleMessage;
 
     public abstract int getTextureResource();
 
@@ -77,6 +80,14 @@ public abstract class Camera2Fragment extends Fragment implements Camera2Listene
 
     public boolean isRecording() {
         return isRecording;
+    }
+
+    public void setRationaleMessage(String message) {
+        mRationaleMessage = message;
+    }
+
+    public void setRationaleMessage(@StringRes int messageResource) {
+        mRationaleMessage = getString(messageResource);
     }
 
     public void startRecordingVideo() {
@@ -104,6 +115,12 @@ public abstract class Camera2Fragment extends Fragment implements Camera2Listene
         if (!kill) {
             openCamera(mCameraLayout.getWidth(), mCameraLayout.getHeight());
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mRationaleMessage = getString(R.string.camera2_permission_message);
     }
 
     @Override
@@ -159,7 +176,7 @@ public abstract class Camera2Fragment extends Fragment implements Camera2Listene
 
     protected void requestVideoPermissions() {
         if (CameraUtil.shouldShowRequestPermissionRationale(this, Camera2PermissionDialog.VIDEO_PERMISSIONS)) {
-            Camera2PermissionDialog.newInstance(this).show(getChildFragmentManager(), Camera2PermissionDialog.FRAGMENT_DIALOG);
+            Camera2PermissionDialog.newInstance(this, mRationaleMessage).show(getChildFragmentManager(), Camera2PermissionDialog.FRAGMENT_DIALOG);
         } else {
             FragmentCompat.requestPermissions(this, Camera2PermissionDialog.VIDEO_PERMISSIONS, Camera2PermissionDialog.REQUEST_VIDEO_PERMISSIONS);
         }

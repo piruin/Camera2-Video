@@ -22,6 +22,12 @@ import java.util.Date;
  */
 public class CaptureFragment extends Camera2Fragment implements Camera2Listener {
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRationaleMessage("Hey man, we need to use your camera please!");
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

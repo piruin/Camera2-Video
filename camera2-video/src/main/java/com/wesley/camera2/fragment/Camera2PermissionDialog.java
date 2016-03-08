@@ -10,8 +10,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v13.app.FragmentCompat;
 
-import com.wesley.camera2.R;
-
 /**
  * Created by wesley on 2016/03/02.
  */
@@ -26,17 +24,19 @@ public class Camera2PermissionDialog extends DialogFragment {
     };
 
     private Fragment mParentFragment;
+    private String mRationaleMessage;
 
-    public static Camera2PermissionDialog newInstance(Fragment mParentFragment) {
+    public static Camera2PermissionDialog newInstance(Fragment mParentFragment, String mRationaleMessage) {
         Camera2PermissionDialog f = new Camera2PermissionDialog();
         f.mParentFragment = mParentFragment;
+        f.mRationaleMessage = mRationaleMessage;
         return f;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
-                .setMessage(R.string.camera2_permission_message)
+                .setMessage(mRationaleMessage)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
