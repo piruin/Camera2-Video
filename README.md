@@ -19,7 +19,13 @@ The new Camera2 API has greatly changed how to interface with the camera. This l
 1. `setUpCaptureRequestBuilder(CaptureRequest.Builder builder)` - the default setup only does `builder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);`, however, you can override `setUpCaptureRequestBuilder` and build the CaptureRequest yourself.
 2. `protected void setUpMediaRecorder() throws IOException` - care needs to be taken when overriding this method. If you need to customise any `MediaRecorder` settings, overriding this method will allow that. Currently, the encoding frame rate is set to 30, and the bit rate to 1600
 
-With Marshmallow, permissions are granted (or denied) at runtime. This library takes care of all that, including the rationale prompt (a dialog explaining why you need permission to use the feature - only shown if the user continuously denies permission). To customise the rationale message, simply call `setRationaleMessage(String message)` or `setRationaleMessage(int messageResource)` during `onCreate()`.
+With Marshmallow, permissions are granted (or denied) at runtime. This library takes care of all that, including the rationale prompt (a dialog explaining why you need permission to use the feature - only shown if the user continuously denies permission). To customise the rationale message, during `onCreate()` simply call 
+
+`setRationaleMessage(String message)`
+
+or 
+
+`setRationaleMessage(int messageResource)`
 
 ### Error Handling
 All exceptions related to file handling and camera setup are caught. Default behaviour is to `Log` the exception. If you need to manually handle these, override one or more of the following:
