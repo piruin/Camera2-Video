@@ -311,11 +311,12 @@ public abstract class Camera2Fragment extends Fragment implements Camera2Listene
         return surfaces;
     }
 
-    private void updatePreview() {
+    protected void updatePreview() {
         if (mCameraDevice == null) {
             return;
         }
         try {
+            System.out.println("UPdate preview");
             setUpCaptureRequestBuilder(mPreviewBuilder);
             HandlerThread thread = new HandlerThread("CameraPreview");
             thread.start();
